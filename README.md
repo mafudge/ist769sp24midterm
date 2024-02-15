@@ -17,15 +17,17 @@ There is a lot of information in this document. Please read it carefully. If you
 
 ### Exam Schedule
 
-1. 2/28 Exam is released after class unit F is complete. 
-2. 3/4 Monday we will have exam Q and A. 
- - Before this meeting you should verify you can run the exam environment and connect to the data sources with spark and drill.
- - This is the only time you will be able to ask questions about the exam. You can pre-ask your questions on the class google doc.
-3. 3/6 Wednesday no class. This time is given for you to work on the exam.
-4. 3/8 Friday exam must be turned in by 11:59pm
-5. 3/9 Saturday exam accepted at 10% penalty by 11:59pm
-6. 3/10 Sunday exam accepted at 20% penalty by 11:59pm
-7. 3/11 Exam no longer accepted.
+- 2/28 Exam is released after class unit F is complete. 
+- 3/4 Monday we will have exam Q and A.   
+   Before this meeting you should verify you can run the exam environment and connect to the data sources with spark and drill.  
+   This is the only time you will be able to ask questions about the exam. You can pre-ask your questions on the class google doc.
+- 3/6 Wednesday no class. This time is given for you to work on the exam.
+- 3/8 Friday exam must be turned in to blackboard (screesnhots + ipynb file) by 11:59pm
+- 3/9 Saturday exam accepted at 10% penalty by 11:59pm
+- 3/10 Sunday exam accepted at 20% penalty by 11:59pm
+- 3/11 Exam no longer accepted.
+
+Deadlines are strictly enforced.
 
 ### Academic Integrity
 
@@ -35,26 +37,26 @@ Allowed During the Exam Period:
 - Content from the internet (pages, videos, posted stack overflow, questions, etc., generally anything you can find with a web or library search). 
 - Whatever we discuss in class on Monday. No exam questions after Monday.
 
-NOT Allowed During the Exam (These are an Academic Integrity violation):
+NOT Allowed During the Exam Period (These are Academic Integrity violations):
 
 - AI bots like Chat-GPT.
 - Bouncing ideas off your classmates, or collaborating on approaches to solving this problem. 
 - Asking another human for clarification, advice, interpretation, or suggestions whether in person or online, whether synchronously or asynchronously.
 - Use of test aid websites like Chegg, Coursehero, etc. These won't be helpful, and they are evil anyways.
 
-Violations of Academic integrity will be reported. Sanctions are a Zero on the exam.
+Violations of Academic integrity will be reported. Sanctions are a zero grade on the exam.
 
 ## Setup
 
 To get this midterm:
 
-- Open windows powershell
-- `PS> git clone https://github.com/mafudge/ist769sp24midterm.git`
-- `PS> cd ist769sp24midterm`
+- On a computer that meetings the requirements of the course, open a terminal:
+- `$ git clone https://github.com/mafudge/ist769sp24midterm.git`
+- `$ cd ist769sp24midterm`
 
 ## PART 1: The environment:
 
-The environment is a `docker-compose.yaml` file that simulates a distributed environment. It consists of the following services:
+The environment has a `docker-compose.yaml` file that simulates a distributed environment. It consists of the following services:
 
 Databases: 
 - **mssql** - A Microsoft SQL Server database that stores the player and team reference data. The database is called `sidearmdb` and the tables are `players` and `teams`.
@@ -142,14 +144,14 @@ By default the game stream "plays" at 4x speed. That 0.25 seconds of real time i
 
 **NOTE:** You can always `docker-compose down` everything and bring it back up with `docker-compose up -d` too.
 
-# PART 3: The Problem
+## PART 3: The Problem
 
 The objective is to create a data pipeline which processes a simplified version of an in-game stream from a simulated a lacrosse game. The game stream has been simplified to only process goals scored. There are two parts to this problem:
 
 1. At any point while the game is in progress, the game stream should be converted into a JSON format so the web developers can use it to create a box score page on a website. This JSON should be written to the `mongodb/sidearm/boxscores` collection, and should contain all the data necessary to display the box score page from a single query to the database. If you don't know what a box score looks like here's an example: https://colgateathletics.com/sports/mens-lacrosse/stats/2024/syracuse/boxscore/10202 of course ours will be more simplistic.
 2. When the game is over, the player and team reference data should be updated to reflect the team records and player statistics after the competition has ended. Normally you would update the `mssql` tables, but for this exam you will create new tables with the updated data, `players2` and `teams2` respectively. This is mostly because spark does not support row-level updates. In a real world scenario, you would write an SQL script on `mssql` to update the tables. from the changes in the `players2` and `teams2` tables, but that is outside the scope of this exam. 
 
-## Game Stream 
+### Game Stream 
 
 While the game is going on, there is a file called `gamestream.txt` located in the  `minio/gamestreams` S3 bucket. Each time an in-game event happens, the event is appended to this file.
 To simplify things, the game stream only reports shots on goal. Here is the format of the file each line is an event and the fields are separated by a space:
@@ -161,14 +163,14 @@ To simplify things, the game stream only reports shots on goal. Here is the form
 3 55:25 101 4 0
 ```
 
-### Data Dictionary for gamestream.txt
+#### Data Dictionary for gamestream.txt
 - The first column is the event ID. These are sequential. An event ID of -1 means the game is over.
 - The second column is the timestamp of the event in the format `mm:ss`. This counts down to 00:00. For example the first event occurred 9 seconds into the game.
 - The third column is the team ID, indicating team took the shot on goal. In the simulation there are only two teams, `101` and `205`.
 - the fourth colum is the jersey number of the player who took the shot.
 - the final column is a `1` if the shot was a goal, `0` if it was a miss.
 
-## Player and Team Reference Data
+### Player and Team Reference Data
 
 The player and team reference data is stored in a Microsoft SQL Server database.  The database is called `sidearmdb` . The database has two tables, `players` and `teams` with the following schemas, respectively:
 
@@ -247,30 +249,25 @@ NOTES:
 
 - We will not update the actual tables. Instead we will create new tables called `teams2` and `players2` with the updated data. It's anti-big data to perform row-level updates. The proper way to move the updates into the original tables would be to write an MSSQL script to update the tables, but that is outside the scope of this exam.
 
-# PART 4: Exam Questions
+## PART 4: Exam Questions
 
-## Advice for the Best Grade
+### Advice for the Best Grade
 
-- Make sure you can connect to `mssql`, `mongodb` and `minio` using both Spark and Drill. Test your connections before you start the exam.
-- Write PySpark and use the DataFrames API. You should NOT need to use RDD or fall back to PoP (plain old Python). While you CAN solve these problems using both of those approaches but will not receive credit for answering the question. 
+- Make sure you can connect to `mssql`, `mongodb` and `minio` using both Spark and Drill. Test your connections before you start the exam. Discuss any issues you have during the question period on Monday.
 - Brush up on your SQL! You can solve the data transformation questions using pure SQL constructs like window functions, aggregates, unions, joins, and views/common-table expressions.
-- There are many ways to solve these problems. If you get stuck, try a different approach. I expect everyone will have slightly different solutions.
-- Build a data flow. Use Multiple steps and keep your transformations simple for each step.
-- Any `.ipynb` files you create should be in the `work` folder!
-- If you cannot figure out the answer to the question, I suggest writing simpler code and use that as your answer. This way you can complete the next question in the exam. It is better to have running code that is incorrect than code that will not run.
-- If you know your answer is not correct, explain that. Include what you tried. You are more harshly penalized for believing your answer is correct when it is not. 
+- There are many ways to solve these problems. If you get stuck, try a different approach. I expect everyone will have slightly different solutions / approaches.
+- Build a data flow. Use Multiple steps and keep your transformations simple for each step. 
+- If your transformations are compute-heavy, it makes sense write you work out to local spark and read it back in again to simplify the Spark execution plan. This is a common-practice and big-data friendly.
+- If you cannot figure out the answer to the question, I suggest writing simpler code and use that as your answer. This way you can complete the next question in the exam. It is better to have running code that is incorrect than code that will not run. Revisit the complex questions later if you have time.
+- In addition to uploading the `Start.ipynb` on Blackboard, for each question, you will be asked to provide:
+  - An EXPLANATION as to if you answered the question correctly. If you know your answer is NOT correct, explain that and justify what you tried. You are more harshly penalized for believing your answer is correct when it is not. Knowing your code is correct is just as important.
+  - A CLEAR screenshot of your CODE with your netid in the screenshot. (only screenshot the code region, not the entire window!) Break your code up onto multiple lines so that it is legible. Include comments if you believe it will help your code be understood by the grader.
+  - A CLEAR screenshot of the OUTPUT of your code with your netid in the screenshot. (again, only screenshot the region, not the entire window!) Your output should be limited by rows /columns so that its easy to read and clearly demonstrates the code answers the question. 
+  - You will be penalized for unreadable screenshots or output that does not clearly support your code as an answer to the question.
 
-## Instructions
+###  Questions
 
-Each question is worth 3 or 4 points. Questions weights are in the blackboard assignment submission. The more difficult questions are 4 points.
-
-For the highest possible marks, for each question, include:
-1. A STATEMENT as to whether your answer is correct or incorrect. When incorrect, please include a brief explanation. This can only help your grade. 
-1. A CLEAR screenshot of your code with your netid in the screenshot. (only screenshot the code region, not the entire window!) Break your code up onto multiple lines so that it is legible. Include comments if you believe it will help your code be understood by the grader.
-2. A CLEAR screenshot of the output of your code with your netid in the screenshot. (only screenshot the region, not the entire window!) Your output should be limited by rows /columns so that its easy to read and clearly demonstrates the code answers the question.
-3. A TEXT COPY of the code from your screenshot. In case I need to execute your code. 
-
-## Questions
+Each question is worth 3 or 4 points, for 50 total points. Questions weights are in the blackboard assignment submission. The more difficult questions are 4 points.
 
 1. Write a drill SQL query to list the team and player data. Specifically display team name, team wins, team losses player name, player shots and player goals. 
 
