@@ -70,6 +70,8 @@ Tools:
 Scripts:
 - **gamestream** - A python script that simulates a lacrosse game stream. As game events happen, it writes the game stream to a file in the `minio/gamestreams` S3 bucket.
 
+[![](https://mermaid.ink/img/pako:eNpVj8tqwzAQRX9lmFUDyQ94UbBr6MpQcEoWVhZTaZKI6tFIclsT5d8r26XQWQ13zj0wN5ReMVZ4Mv5LXigk2LfCQZl66LTTHp7JMvQpMNkj7HaPeQlqmfSnTlOGw0PtyExJy7hZm83QxXg10FKitbIvZSCn4MXQxGG5lOaKH2YEcuO_oZc-cIanofPu7NUb_IXx-A_-9czKxf36oShxzNDMGG7RcrCkVfnsNicC04UtC6zKqii8CxTuXjgak-8nJ7FKYeQtjouo1XQOZLE6kYl8_wEVM2BQ?type=png)](https://mermaid.live/edit#pako:eNpVj8tqwzAQRX9lmFUDyQ94UbBr6MpQcEoWVhZTaZKI6tFIclsT5d8r26XQWQ13zj0wN5ReMVZ4Mv5LXigk2LfCQZl66LTTHp7JMvQpMNkj7HaPeQlqmfSnTlOGw0PtyExJy7hZm83QxXg10FKitbIvZSCn4MXQxGG5lOaKH2YEcuO_oZc-cIanofPu7NUb_IXx-A_-9czKxf36oShxzNDMGG7RcrCkVfnsNicC04UtC6zKqii8CxTuXjgak-8nJ7FKYeQtjouo1XQOZLE6kYl8_wEVM2BQ)
+
 ## PART 2: Managing the environment
 
 ### A warning about other containers
